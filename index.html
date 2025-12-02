@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Database | Medical Records Management</title>
+  <meta name="description" content="Streamlined patient database system for healthcare professionals.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: #2563eb;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+    
+    .logo-text h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 0.625rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #e2e8f0;
+      background: white;
+      color: #374151;
+      transition: all 0.15s;
+    }
+    
+    .btn:hover {
+      background: #f1f5f9;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    
+    .btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+    
+    /* Main Content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    
+    /* Search */
+    .search-container {
+      position: relative;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: white;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    
+    .search-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-top: 0.25rem;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 50;
+    }
+    
+    .search-dropdown.open {
+      display: block;
+    }
+    
+    .search-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .search-item:hover {
+      background: #f8fafc;
+    }
+    
+    .search-item:last-child {
+      border-bottom: none;
+    }
+    
+    .search-item-name {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    
+    .search-item-issue {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    
+    .search-item-date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+    }
+    
+    .search-empty {
+      padding: 1rem;
+      text-align: center;
+      color: #64748b;
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .patient-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .patient-avatar {
+      width: 56px;
+      height: 56px;
+      background: #eff6ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2563eb;
+      font-size: 1.5rem;
+    }
+    
+    .patient-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .patient-date {
+      font-size: 0.875rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+    }
+    
+    .badge {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    /* Sections */
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+    
+    .section-divider {
+      border-top: 1px solid #f1f5f9;
+      margin: 1.5rem 0;
+    }
+    
+    .fields-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .field {
+      min-width: 0;
+    }
+    
+    .field.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    .field-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: #64748b;
+      margin-bottom: 0.375rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    
+    .field-value {
+      color: #1e293b;
+      word-wrap: break-word;
+    }
+    
+    .field-value.empty {
+      color: #94a3b8;
+      font-style: italic;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #94a3b8;
+    }
+    
+    .empty-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-text {
+      color: #64748b;
+      max-width: 400px;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .empty-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Form */
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .form-subtitle {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+    
+    .close-btn:hover {
+      color: #64748b;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: #64748b;
+      margin-bottom: 0.375rem;
+    }
+    
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .form-textarea.large {
+      min-height: 180px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    
+    .paste-section {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .paste-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: #2563eb;
+      font-weight: 500;
+    }
+    
+    .paste-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1e293b;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 1000;
+      max-width: 350px;
+    }
+    
+    .toast.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .toast-message {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+    
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+      }
+      
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+      
+      .fields-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-actions">
+        <button class="btn" id="searchBtn" onclick="showSearch()">
+          <span>🔍</span> Search Patient
+        </button>
+        <button class="btn" id="registerBtn" onclick="showRegister()">
+          <span>➕</span> Register New Patient
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Welcome State -->
+    <div id="welcomeState" class="card">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3 class="empty-title">Welcome</h3>
+        <p class="empty-text">Search for patients or register new ones.</p>
+        <div class="empty-actions">
+          <button class="btn" onclick="showSearch()">
+            <span>🔍</span> Search Patients
+          </button>
+          <button class="btn btn-primary" onclick="showRegister()">
+            <span>➕</span> Register New
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div id="searchSection" class="hidden">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search patients by name or issue..." oninput="filterPatients()" onfocus="openDropdown()" onclick="this.select()">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+      
+      <div id="noSelectionState" class="card">
+        <div class="empty-state">
+          <div class="empty-icon">👤</div>
+          <h3 class="empty-title">Select a Patient</h3>
+          <p class="empty-text">Use the search above to find and select a patient, or register a new one to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Card -->
+    <div id="patientCard" class="card hidden"></div>
+
+    <!-- Registration Form -->
+    <div id="registrationForm" class="card hidden">
+      <div class="form-header">
+        <div>
+          <h2 class="form-title">Register New Patient</h2>
+          <p class="form-subtitle">Paste the Gemini response below or fill in the fields manually</p>
+        </div>
+        <button class="close-btn" onclick="hideRegister()">&times;</button>
+      </div>
+
+      <div class="paste-section" id="pasteSection">
+        <button type="button" class="btn" onclick="copyPrompt()" style="width: 100%; margin-bottom: 0.5rem;">
+          <span>📋</span> Copy Prompt
+        </button>
+        <button type="button" class="btn btn-primary" onclick="pasteFromClipboard()" style="width: 100%;">
+          <span>📥</span> Paste Gemini Response
+        </button>
+        <p class="paste-hint" style="text-align: center; margin-top: 0.75rem;">1. Tap Copy Prompt, then paste in Gemini with your admission note. 2. Copy Gemini's response, then tap Paste.</p>
+      </div>
+
+      <form id="patientForm" onsubmit="submitPatient(event)">
+        <div class="fields-grid">
+          <div class="form-group">
+            <label class="form-label">Registered Date</label>
+            <input type="text" class="form-input" id="field_registeredDate" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-input" id="field_name" required>
+          </div>
+          <div class="form-group field full-width">
+            <label class="form-label">Issue</label>
+            <input type="text" class="form-input" id="field_issue">
+          </div>
+          <div class="form-group">
+            <label class="form-label">PMHX (Past Medical History)</label>
+            <input type="text" class="form-input" id="field_pmhx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meds (Medications)</label>
+            <input type="text" class="form-input" id="field_meds">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">HOPC (History of Present Complaint)</label>
+            <textarea class="form-textarea" id="field_hopc"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">O/E (On Examination)</label>
+            <textarea class="form-textarea" id="field_oe"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Ix (Investigations)</label>
+            <textarea class="form-textarea" id="field_ix"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pre/Post Op</label>
+            <input type="text" class="form-input" id="field_prePostOp">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fasting</label>
+            <input type="text" class="form-input" id="field_fasting">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Output</label>
+            <input type="text" class="form-input" id="field_output">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Mx (Management)</label>
+            <textarea class="form-textarea" id="field_mx"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Follow Up</label>
+            <input type="text" class="form-input" id="field_followUp">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Notes</label>
+            <textarea class="form-textarea" id="field_notes"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="hideRegister()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span>💾</span> Save Patient
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-title" id="toastTitle"></div>
+    <div class="toast-message" id="toastMessage"></div>
+  </div>
+
+  <script>
+    // Configuration
+    const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzVeWiH2_nujHFc-H4p2U4lDk5bpFOy5NmnbS2Wl8CBe2_3t_eP39yPC5e3VTjpKUOf/exec';
+    const GEMINI_URL = 'https://gemini.google.com/app';
+    const GEMINI_PROMPT = `Refer to the attached admission note and extract the details for the following topics: Name, Issue, PMHX, Meds, HOPC, O/E, Ix, Pre/post Op, Fasting, Output, Mx, Follow up, and Notes. Present the results as a single, easily copy-pastable block of text. Each topic must be on a new line followed by a colon and its corresponding detail. Do not use any special formatting, LaTeX, or markdown characters in the details section. If there is no information for a topic, leave the detail blank.`;
+
+    // State
+    let patients = [];
+    let selectedPatient = null;
+    let isEditMode = false;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setTodayDate();
+      fetchPatients();
+    });
+
+    // Set today's date
+    function setTodayDate() {
+      const today = new Date();
+      const dateStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+      document.getElementById('field_registeredDate').value = dateStr;
+    }
+
+    // Fetch patients from Google Sheets
+    async function fetchPatients() {
+      try {
+        const response = await fetch(`${GOOGLE_SHEETS_URL}?action=getPatients`);
+        const data = await response.json();
+        
+        if (Array.isArray(data) && data.length > 1) {
+          // Parse 2D array format (headers in first row)
+          const headers = data[0];
+          patients = data.slice(1).map((row, index) => {
+            const patient = { id: index + 1 };
+            headers.forEach((header, i) => {
+              const key = mapHeaderToKey(header);
+              if (key) {
+                // Format dates from ISO to readable format
+                if (key === 'registeredDate') {
+                  patient[key] = formatDate(row[i]) || '';
+                } else {
+                  patient[key] = row[i] || '';
+                }
+              }
+            });
+            return patient;
+          }).filter(p => p.name);
+        } else if (Array.isArray(data)) {
+          // Already parsed object format
+          patients = data.map((p, index) => ({ 
+            ...p, 
+            id: index + 1,
+            registeredDate: formatDate(p.registeredDate)
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching patients:', error);
+      }
+    }
+
+    // Map header names to field keys
+    function mapHeaderToKey(header) {
+      const map = {
+        'Registered Date': 'registeredDate',
+        'Name': 'name',
+        'Issue': 'issue',
+        'PMHX': 'pmhx',
+        'Meds': 'meds',
+        'HOPC': 'hopc',
+        'O/E': 'oe',
+        'Ix': 'ix',
+        'Pre/post Op': 'prePostOp',
+        'Fasting': 'fasting',
+        'Output': 'output',
+        'Mx': 'mx',
+        'Follow up': 'followUp',
+        'Notes': 'notes'
+      };
+      return map[header];
+    }
+
+    // Format date from ISO to M/D/YYYY
+    function formatDate(dateValue) {
+      if (!dateValue) return '';
+      // Check if it's an ISO date string (contains 'T' or ends with 'Z')
+      if (typeof dateValue === 'string' && (dateValue.includes('T') || dateValue.includes('Z'))) {
+        const date = new Date(dateValue);
+        if (!isNaN(date.getTime())) {
+          return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        }
+      }
+      return dateValue;
+    }
+
+    // Copy prompt and show instructions
+    function copyPrompt() {
+      navigator.clipboard.writeText(GEMINI_PROMPT).then(() => {
+        showToast('Prompt Copied!', 'Now open the Gemini app and paste the prompt with your admission note.');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = GEMINI_PROMPT;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast('Prompt Copied!', 'Now open the Gemini app and paste the prompt with your admission note.');
+        } catch (err) {
+          showToast('Error', 'Failed to copy prompt. Please copy manually.');
+        }
+        document.body.removeChild(textArea);
+      });
+    }
+
+    // Show search view
+    function showSearch() {
+      document.getElementById('welcomeState').classList.add('hidden');
+      document.getElementById('searchSection').classList.remove('hidden');
+      document.getElementById('registrationForm').classList.add('hidden');
+      document.getElementById('patientCard').classList.add('hidden');
+      document.getElementById('noSelectionState').classList.remove('hidden');
+      
+      document.getElementById('searchBtn').classList.add('active');
+      document.getElementById('registerBtn').classList.remove('active');
+      
+      document.getElementById('searchInput').focus();
+    }
+
+    // Show registration form
+    function showRegister() {
+      isEditMode = false;
+      document.getElementById('welcomeState').classList.add('hidden');
+      document.getElementById('searchSection').classList.add('hidden');
+      document.getElementById('registrationForm').classList.remove('hidden');
+      document.getElementById('patientCard').classList.add('hidden');
+      
+      document.getElementById('registerBtn').classList.add('active');
+      document.getElementById('searchBtn').classList.remove('active');
+      
+      // Update form header for new patient mode
+      document.querySelector('.form-title').textContent = 'Register New Patient';
+      document.querySelector('.form-subtitle').textContent = 'Paste the Gemini response below or fill in the fields manually';
+      document.getElementById('pasteSection').classList.remove('hidden');
+      document.getElementById('submitBtn').innerHTML = '<span>💾</span> Save Patient';
+      
+      resetForm();
+    }
+
+    // Edit patient
+    function editPatient() {
+      if (!selectedPatient) return;
+      
+      isEditMode = true;
+      document.getElementById('welcomeState').classList.add('hidden');
+      document.getElementById('searchSection').classList.add('hidden');
+      document.getElementById('registrationForm').classList.remove('hidden');
+      document.getElementById('patientCard').classList.add('hidden');
+      
+      document.getElementById('registerBtn').classList.remove('active');
+      document.getElementById('searchBtn').classList.remove('active');
+      
+      // Update form header for edit mode
+      document.querySelector('.form-title').textContent = 'Edit Patient';
+      document.querySelector('.form-subtitle').textContent = `Updating record for ${selectedPatient.name}`;
+      document.getElementById('pasteSection').classList.add('hidden');
+      document.getElementById('submitBtn').innerHTML = '<span>💾</span> Update Patient';
+      
+      // Populate form with patient data
+      document.getElementById('field_registeredDate').value = selectedPatient.registeredDate || '';
+      document.getElementById('field_name').value = selectedPatient.name || '';
+      document.getElementById('field_issue').value = selectedPatient.issue || '';
+      document.getElementById('field_pmhx').value = selectedPatient.pmhx || '';
+      document.getElementById('field_meds').value = selectedPatient.meds || '';
+      document.getElementById('field_hopc').value = selectedPatient.hopc || '';
+      document.getElementById('field_oe').value = selectedPatient.oe || '';
+      document.getElementById('field_ix').value = selectedPatient.ix || '';
+      document.getElementById('field_prePostOp').value = selectedPatient.prePostOp || '';
+      document.getElementById('field_fasting').value = selectedPatient.fasting || '';
+      document.getElementById('field_output').value = selectedPatient.output || '';
+      document.getElementById('field_mx').value = selectedPatient.mx || '';
+      document.getElementById('field_followUp').value = selectedPatient.followUp || '';
+      document.getElementById('field_notes').value = selectedPatient.notes || '';
+    }
+
+    // Hide registration form
+    function hideRegister() {
+      document.getElementById('registrationForm').classList.add('hidden');
+      if (selectedPatient) {
+        document.getElementById('patientCard').classList.remove('hidden');
+      } else {
+        document.getElementById('welcomeState').classList.remove('hidden');
+      }
+      document.getElementById('registerBtn').classList.remove('active');
+    }
+
+    // Open search dropdown
+    function openDropdown() {
+      filterPatients();
+      document.getElementById('searchDropdown').classList.add('open');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-container')) {
+        document.getElementById('searchDropdown').classList.remove('open');
+      }
+    });
+
+    // Filter patients in dropdown
+    function filterPatients() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const dropdown = document.getElementById('searchDropdown');
+      
+      const filtered = patients.filter(p => 
+        (p.name && p.name.toLowerCase().includes(query)) ||
+        (p.issue && p.issue.toLowerCase().includes(query))
+      );
+      
+      if (filtered.length === 0) {
+        dropdown.innerHTML = `<div class="search-empty">${query ? 'No patients found' : 'No patients in database'}</div>`;
+      } else {
+        dropdown.innerHTML = filtered.map(p => `
+          <div class="search-item" onclick="selectPatient(${p.id})">
+            <div class="search-item-name">${p.name || 'Unknown'}</div>
+            <div class="search-item-issue">${p.issue || 'No issue specified'}</div>
+            <div class="search-item-date">Registered: ${p.registeredDate || 'N/A'}</div>
+          </div>
+        `).join('');
+      }
+      
+      dropdown.classList.add('open');
+    }
+
+    // Select a patient
+    function selectPatient(id) {
+      selectedPatient = patients.find(p => p.id === id);
+      if (!selectedPatient) return;
+      
+      document.getElementById('searchInput').value = selectedPatient.name;
+      document.getElementById('searchDropdown').classList.remove('open');
+      document.getElementById('noSelectionState').classList.add('hidden');
+      
+      renderPatientCard(selectedPatient);
+    }
+
+    // Render patient card
+    function renderPatientCard(patient) {
+      const card = document.getElementById('patientCard');
+      card.classList.remove('hidden');
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="patient-info">
+            <div class="patient-avatar">👤</div>
+            <div>
+              <h2 class="patient-name">${patient.name || 'Unknown Patient'}</h2>
+              <div class="patient-date">📅 Registered: ${patient.registeredDate || 'N/A'}</div>
+            </div>
+          </div>
+          <button class="btn" onclick="editPatient()">
+            <span>✏️</span> Edit Patient
+          </button>
+        </div>
+        
+        <div class="section">
+          <h3 class="section-title">Primary Issue</h3>
+          <div class="fields-grid">
+            ${renderField('🩺 Issue', patient.issue, true)}
+          </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="section">
+          <h3 class="section-title">Medical History</h3>
+          <div class="fields-grid">
+            ${renderField('📋 PMHX', patient.pmhx)}
+            ${renderField('💊 Medications', patient.meds)}
+          </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="section">
+          <h3 class="section-title">Current Admission</h3>
+          <div class="fields-grid">
+            ${renderField('📝 HOPC', patient.hopc, true)}
+            ${renderField('🩺 O/E', patient.oe, true)}
+            ${renderField('🔬 Ix', patient.ix, true)}
+          </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="section">
+          <h3 class="section-title">Treatment Status</h3>
+          <div class="fields-grid">
+            ${renderField('✂️ Pre/Post Op', patient.prePostOp)}
+            ${renderField('🍽️ Fasting', patient.fasting)}
+            ${renderField('💧 Output', patient.output)}
+          </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="section">
+          <h3 class="section-title">Management & Follow-up</h3>
+          <div class="fields-grid">
+            ${renderField('📋 Mx', patient.mx, true)}
+            ${renderField('📆 Follow Up', patient.followUp)}
+          </div>
+        </div>
+        
+        ${patient.notes ? `
+          <div class="section-divider"></div>
+          <div class="section">
+            <h3 class="section-title">Additional Notes</h3>
+            <div class="fields-grid">
+              ${renderField('📝 Notes', patient.notes, true)}
+            </div>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    // Render a single field
+    function renderField(label, value, fullWidth = false) {
+      return `
+        <div class="field ${fullWidth ? 'full-width' : ''}">
+          <div class="field-label">${label}</div>
+          <div class="field-value ${!value ? 'empty' : ''}">${value || 'Not specified'}</div>
+        </div>
+      `;
+    }
+
+    // Paste from clipboard and parse
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (!text.trim()) {
+          showToast('Empty Clipboard', 'No text found in clipboard. Copy the Gemini response first.');
+          return;
+        }
+        parseGeminiResponse(text);
+      } catch (err) {
+        showToast('Permission Needed', 'Please allow clipboard access, or paste manually into the Name field.');
+      }
+    }
+
+    // Parse Gemini response text
+    function parseGeminiResponse(text) {
+      const lines = text.split('\n');
+      const fieldMap = {
+        'name': 'field_name',
+        'issue': 'field_issue',
+        'pmhx': 'field_pmhx',
+        'meds': 'field_meds',
+        'hopc': 'field_hopc',
+        'o/e': 'field_oe',
+        'oe': 'field_oe',
+        'ix': 'field_ix',
+        'pre/post op': 'field_prePostOp',
+        'prepostop': 'field_prePostOp',
+        'pre-post op': 'field_prePostOp',
+        'fasting': 'field_fasting',
+        'output': 'field_output',
+        'mx': 'field_mx',
+        'follow up': 'field_followUp',
+        'followup': 'field_followUp',
+        'follow-up': 'field_followUp',
+        'notes': 'field_notes'
+      };
+      
+      let fieldsFound = 0;
+      
+      lines.forEach(line => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex === -1) return;
+        
+        const key = line.substring(0, colonIndex).trim().toLowerCase();
+        const value = line.substring(colonIndex + 1).trim();
+        
+        const fieldId = fieldMap[key];
+        if (fieldId) {
+          document.getElementById(fieldId).value = value;
+          fieldsFound++;
+        }
+      });
+      
+      if (fieldsFound > 0) {
+        showToast('Fields Populated', `${fieldsFound} fields were auto-filled from Gemini response.`);
+      } else {
+        showToast('No Fields Found', 'Could not find patient data in the clipboard text.');
+      }
+    }
+
+    // Reset form
+    function resetForm() {
+      document.getElementById('patientForm').reset();
+      setTodayDate();
+    }
+
+    // Submit patient
+    async function submitPatient(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('field_name').value.trim();
+      if (!name) {
+        showToast('Error', 'Patient name is required');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = isEditMode ? '<span>⏳</span> Updating...' : '<span>⏳</span> Saving...';
+      
+      const patientData = {
+        'Registered Date': document.getElementById('field_registeredDate').value,
+        'Name': name,
+        'Issue': document.getElementById('field_issue').value,
+        'PMHX': document.getElementById('field_pmhx').value,
+        'Meds': document.getElementById('field_meds').value,
+        'HOPC': document.getElementById('field_hopc').value,
+        'O/E': document.getElementById('field_oe').value,
+        'Ix': document.getElementById('field_ix').value,
+        'Pre/post Op': document.getElementById('field_prePostOp').value,
+        'Fasting': document.getElementById('field_fasting').value,
+        'Output': document.getElementById('field_output').value,
+        'Mx': document.getElementById('field_mx').value,
+        'Follow up': document.getElementById('field_followUp').value,
+        'Notes': document.getElementById('field_notes').value
+      };
+      
+      try {
+        // For edit mode, include the row number to update
+        const requestBody = isEditMode 
+          ? { action: 'updatePatient', rowIndex: selectedPatient.id, data: patientData }
+          : { action: 'addPatient', data: patientData };
+        
+        await fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        // Update local data
+        const updatedPatient = {
+          id: isEditMode ? selectedPatient.id : patients.length + 1,
+          registeredDate: patientData['Registered Date'],
+          name: patientData['Name'],
+          issue: patientData['Issue'],
+          pmhx: patientData['PMHX'],
+          meds: patientData['Meds'],
+          hopc: patientData['HOPC'],
+          oe: patientData['O/E'],
+          ix: patientData['Ix'],
+          prePostOp: patientData['Pre/post Op'],
+          fasting: patientData['Fasting'],
+          output: patientData['Output'],
+          mx: patientData['Mx'],
+          followUp: patientData['Follow up'],
+          notes: patientData['Notes']
+        };
+        
+        if (isEditMode) {
+          // Update existing patient in the list
+          const index = patients.findIndex(p => p.id === selectedPatient.id);
+          if (index !== -1) {
+            patients[index] = updatedPatient;
+          }
+          showToast('Patient Updated', `${name}'s record has been updated.`);
+        } else {
+          // Add new patient to the list
+          patients.unshift(updatedPatient);
+          showToast('Patient Registered', `${name} has been added to the database.`);
+        }
+        
+        selectedPatient = updatedPatient;
+        
+        document.getElementById('registrationForm').classList.add('hidden');
+        document.getElementById('searchSection').classList.remove('hidden');
+        document.getElementById('noSelectionState').classList.add('hidden');
+        document.getElementById('registerBtn').classList.remove('active');
+        document.getElementById('searchBtn').classList.add('active');
+        
+        renderPatientCard(updatedPatient);
+        
+      } catch (error) {
+        showToast('Error', 'Failed to save patient. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = isEditMode ? '<span>💾</span> Update Patient' : '<span>💾</span> Save Patient';
+      }
+    }
+
+    // Show toast notification
+    function showToast(title, message, duration = 4000) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
+  </script>
+</body>
+</html>
